@@ -10,8 +10,13 @@ let elSelectCategory = document.querySelector(".js-select-option-input");
 let elInputMinYear = document.querySelector(".js-min-year-input");
 let elInputMaxYear = document.querySelector(".js-max-year-input");
 let elSortSElect = document.querySelector(".js-select-option-input-sort");
+let elCanvasBtnModal = document.querySelector(".js-canvas-btn");
+let elModalcanvas = document.querySelector(".js-bookmar-lists-canvas");
 let uniqCategories = [];
-let moviesSliced = movies.slice(0, 25);
+let bookmarksArray = [];
+
+let moviesSliced = movies.slice(0, 24);
+
 function uniqueFenres(arr) {
   for (const movie of arr) {
     let categories = movie.categories;
@@ -72,6 +77,7 @@ function renderCategory(category) {
     elSelectCategory.appendChild(option);
   });
 }
+
 renderCategory(uniqCategories);
 function getHourAndMin(data) {
   let hour = Math.floor(data / 60);
@@ -94,15 +100,20 @@ function renderMovies(arr, node) {
       item.categories.join(", ");
 
     cloneNode.querySelector(".js-modal-btn").dataset.imdbId = item.imdb_id;
+    cloneNode.querySelector(".js-bookmark-btn").dataset.imdbId = item.imdb_id;
     fragment.appendChild(cloneNode);
   });
   node.appendChild(fragment);
 }
+
 renderMovies(moviesSliced, elCardWrapper);
+
 elFormForFunctionality.addEventListener("submit", (evet) => {
   evet.preventDefault();
+
   let inputValue = elInputSearch.value.trim();
   let searchRegex = new RegExp(inputValue, "gi");
+
   let allFunctionality = movies.filter((item) => {
     return (
       item.title.match(searchRegex) &&
@@ -112,7 +123,9 @@ elFormForFunctionality.addEventListener("submit", (evet) => {
       (elInputMaxYear.value == "" || item.movie_year <= elInputMaxYear.value)
     );
   });
+
   elCardWrapper.innerHTML = "";
+
   if (allFunctionality.length > 0) {
     sortByvalalues(elSortSElect, allFunctionality);
     renderMovies(allFunctionality, elCardWrapper);
@@ -124,6 +137,7 @@ elFormForFunctionality.addEventListener("submit", (evet) => {
 });
 
 // modal
+
 elCardWrapper.addEventListener("click", (e) => {
   if (e.target.classList.contains("js-modal-btn")) {
     let imdb = e.target.dataset.imdbId;
@@ -156,3 +170,41 @@ function renderModal(movie) {
   elModalSummary.textContent = movie.summary;
   elMovieModalLink.href = movie.imdb_link;
 }
+
+elCardWrapper.addEventListener("click", (event) => {
+  if (event.target.classList.contains("js-bookmark-btn")) {
+    let imdb = event.target.dataset.imdbId;
+    let bookmarkedObj = movies.find((item) => item.imdb_id == imdb);
+    event.target.classList.toggle("bookmarked");
+    const buttonText = event.target.querySelector(".button-text");
+    if (event.target.classList.contains("bookmarked")) {
+      buttonText.innerText = "Boormarked";
+      event.target.classList.add(
+        "bg-yellow-400",
+        "hover:bg-yellow-400",
+        "active:bg-yellow-400"
+      );
+    } else {
+      buttonText.innerText = "Add to List";
+      event.target.classList.remove(
+        "bg-yellow-400",
+        "hover:bg-yellow-400",
+        "active:bg-yellow-400"
+      );
+    }
+    if (event.target.classList.contains("bookmarked")) {
+      bookmarksArray.push(bookmarkedObj);
+    } else {
+      const index = bookmarksArray.findIndex((item) => item.imdb_id == imdb);
+      if (index !== -1) {
+        bookmarksArray.splice(index, 1);
+      }
+    }
+  }
+});
+
+elCanvasBtnModal.addEventListener("click", (event) => {
+  elModalcanvas.classList.toggle("hidden");
+});
+
+
