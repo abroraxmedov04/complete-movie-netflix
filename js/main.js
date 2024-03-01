@@ -12,10 +12,26 @@ let elInputMaxYear = document.querySelector(".js-max-year-input");
 let elSortSElect = document.querySelector(".js-select-option-input-sort");
 let elCanvasBtnModal = document.querySelector(".js-canvas-btn");
 let elModalcanvas = document.querySelector(".js-bookmar-lists-canvas");
+let elTemplateCanvasCard = document.querySelector(
+  ".js-canvas-template-card"
+).content;
+let canvasFragment = document.createDocumentFragment();
+let elCanvasWrapperUl = document.querySelector(".js-canvas-wrapper");
+let elCanvasBtn = document.querySelector(".js-canvas-btn");
+let elCanvasCloseBtn = document.querySelector(".js-canvas-modal-close-btn");
+let elCanvasModal = document.querySelector(".js-canvas-modal-right");
+const elModal = document.querySelector(".js-modal");
+const elCloseModal = document.querySelector(".js-modal-close");
+const elframe = document.querySelector(".js-frame-modal");
+const elModalTitle = document.querySelector(".js-movie-title-modal");
+const elMovierating = document.querySelector(".js-movie-rating-modal");
+const elMovieYear = document.querySelector(".js-movie-year-modal");
+const elMovieRuntime = document.querySelector(".js-movie-watch-time-modal");
+const elModalSummary = document.querySelector(".js-summary-modal");
+const elMovieModalLink = document.querySelector(".js-movie-link-modal");
+
 let uniqCategories = [];
 let bookmarksArray = [];
-
-let moviesSliced = movies.slice(0, 24);
 
 function uniqueFenres(arr) {
   for (const movie of arr) {
@@ -90,30 +106,28 @@ function renderMovies(arr, node) {
     let cloneNode = elTemplateCard.cloneNode(true);
     cloneNode.querySelector(".js-movie-image").src = item.image_url;
     cloneNode.querySelector(".js-movie-name").textContent =
-      item.title.length > 30 ? `${item.title.substring(0, 30)}...` : item.title;
+      item.title.length > 15 ? `${item.title.substring(0, 15)}...` : item.title;
     cloneNode.querySelector(".js-movie-rating").textContent = item.imdb_rating;
     cloneNode.querySelector(".js-movie-year").textContent = item.movie_year;
     cloneNode.querySelector(".js-movie-watch-time").textContent = getHourAndMin(
       item.runtime
     );
     cloneNode.querySelector(".js-movie-genres").textContent =
-      item.categories.join(", ");
-
+      item.categories.length > 3
+        ? item.categories.splice(0, 3).join(", ")
+        : item.categories.join(", ");
     cloneNode.querySelector(".js-modal-btn").dataset.imdbId = item.imdb_id;
     cloneNode.querySelector(".js-bookmark-btn").dataset.imdbId = item.imdb_id;
     fragment.appendChild(cloneNode);
   });
   node.appendChild(fragment);
 }
-
-renderMovies(moviesSliced, elCardWrapper);
+renderMovies(movies.slice(0, 15), elCardWrapper);
 
 elFormForFunctionality.addEventListener("submit", (evet) => {
   evet.preventDefault();
-
   let inputValue = elInputSearch.value.trim();
   let searchRegex = new RegExp(inputValue, "gi");
-
   let allFunctionality = movies.filter((item) => {
     return (
       item.title.match(searchRegex) &&
@@ -123,9 +137,7 @@ elFormForFunctionality.addEventListener("submit", (evet) => {
       (elInputMaxYear.value == "" || item.movie_year <= elInputMaxYear.value)
     );
   });
-
   elCardWrapper.innerHTML = "";
-
   if (allFunctionality.length > 0) {
     sortByvalalues(elSortSElect, allFunctionality);
     renderMovies(allFunctionality, elCardWrapper);
@@ -136,8 +148,6 @@ elFormForFunctionality.addEventListener("submit", (evet) => {
   }
 });
 
-// modal
-
 elCardWrapper.addEventListener("click", (e) => {
   if (e.target.classList.contains("js-modal-btn")) {
     let imdb = e.target.dataset.imdbId;
@@ -146,22 +156,11 @@ elCardWrapper.addEventListener("click", (e) => {
   }
 });
 
-const elModal = document.querySelector(".js-modal");
-const elCloseModal = document.querySelector(".js-modal-close");
-const elframe = document.querySelector(".js-frame-modal");
-const elModalTitle = document.querySelector(".js-movie-title-modal");
-const elMovierating = document.querySelector(".js-movie-rating-modal");
-const elMovieYear = document.querySelector(".js-movie-year-modal");
-const elMovieRuntime = document.querySelector(".js-movie-watch-time-modal");
-const elModalSummary = document.querySelector(".js-summary-modal");
-const elMovieModalLink = document.querySelector(".js-movie-link-modal");
-
 function renderModal(movie) {
   elModal.classList.remove("hidden");
   elCloseModal.addEventListener("click", (evet) => {
     elModal.classList.add("hidden");
   });
-
   elframe.src = movie.movie_frame;
   elModalTitle.textContent = movie.fulltitle;
   elMovierating.textContent = movie.imdb_rating;
@@ -178,7 +177,7 @@ elCardWrapper.addEventListener("click", (event) => {
     event.target.classList.toggle("bookmarked");
     const buttonText = event.target.querySelector(".button-text");
     if (event.target.classList.contains("bookmarked")) {
-      buttonText.innerText = "Boormarked";
+      buttonText.innerText = "Bookmarked";
       event.target.classList.add(
         "bg-yellow-400",
         "hover:bg-yellow-400",
@@ -200,11 +199,31 @@ elCardWrapper.addEventListener("click", (event) => {
         bookmarksArray.splice(index, 1);
       }
     }
+    console.log(bookmarksArray);
+    renderBookmarkedMovies(bookmarksArray, elCanvasWrapperUl);
   }
 });
 
-elCanvasBtnModal.addEventListener("click", (event) => {
-  elModalcanvas.classList.toggle("hidden");
-});
+const toggleCanvasModal = () => {
+  elCanvasModal.classList.toggle("hidden");
+};
 
+function renderBookmarkedMovies(arr, node) {
+  arr.forEach((item) => {
+    node.innerHTML = "";
+    let cloneNode = elTemplateCanvasCard.cloneNode(true);
+    cloneNode.querySelector(".canvas-title").textContent = item.title;
+    cloneNode.querySelector(".canvas-iframe").src = item.movie_frame;
+    cloneNode.querySelector(".canvas-time").textContent = getHourAndMin(
+      item.runtime
+    );
+    cloneNode.querySelector(".canvas-year").textContent = item.movie_year;
+    cloneNode.querySelector(".canvas-rating").textContent = item.imdb_rating;
+    cloneNode.querySelector(".canvas-href").href = item.imdb_link;
+    canvasFragment.appendChild(cloneNode);
+  });
+  node.appendChild(canvasFragment);
+}
 
+elCanvasBtn.addEventListener("click", toggleCanvasModal);
+elCanvasCloseBtn.addEventListener("click", toggleCanvasModal);
