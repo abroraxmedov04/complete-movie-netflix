@@ -224,6 +224,5 @@ function renderBookmarkedMovies(arr, node) {
   });
   node.appendChild(canvasFragment);
 }
-
 elCanvasBtn.addEventListener("click", toggleCanvasModal);
 elCanvasCloseBtn.addEventListener("click", toggleCanvasModal);
