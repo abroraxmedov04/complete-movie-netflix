@@ -101,12 +101,23 @@ function getHourAndMin(data) {
   return `${hour} h ${min} min`;
 }
 
-function renderMovies(arr, node) {
+function renderMovies(arr, node, regex = "") {
   arr.forEach((item) => {
     let cloneNode = elTemplateCard.cloneNode(true);
     cloneNode.querySelector(".js-movie-image").src = item.image_url;
-    cloneNode.querySelector(".js-movie-name").textContent =
-      item.title.length > 15 ? `${item.title.substring(0, 15)}...` : item.title;
+    if (regex && regex.source !== "(?:)") {
+      cloneNode.querySelector(
+        ".js-movie-name"
+      ).innerHTML = `${item.title.replace(
+        regex,
+        `<mark class="bg-warning py-0 rounded-1 text-light text-capitalize">${regex.source}</mark>`
+      )}`;
+    } else {
+      cloneNode.querySelector(".js-movie-name").textContent =
+        item.title.length > 15
+          ? `${item.title.substring(0, 15)}...`
+          : item.title;
+    }
     cloneNode.querySelector(".js-movie-rating").textContent = item.imdb_rating;
     cloneNode.querySelector(".js-movie-year").textContent = item.movie_year;
     cloneNode.querySelector(".js-movie-watch-time").textContent = getHourAndMin(
@@ -140,7 +151,7 @@ elFormForFunctionality.addEventListener("submit", (evet) => {
   elCardWrapper.innerHTML = "";
   if (allFunctionality.length > 0) {
     sortByvalalues(elSortSElect, allFunctionality);
-    renderMovies(allFunctionality, elCardWrapper);
+    renderMovies(allFunctionality, elCardWrapper, searchRegex);
     console.log("hi Im woriking 🤞");
   } else {
     renderInitialMovies(moviesSliced, elCardWrapper);
@@ -226,3 +237,5 @@ function renderBookmarkedMovies(arr, node) {
 }
 elCanvasBtn.addEventListener("click", toggleCanvasModal);
 elCanvasCloseBtn.addEventListener("click", toggleCanvasModal);
+renderBookmarkedMovies(bookmarksArray, elCanvasWrapperUl);
+

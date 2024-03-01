@@ -124,12 +124,13 @@
       </div>
     </div>
   </main>
+
   <template class="js-template">
     <li class="movie-list__item bg-black w-full rounded-md">
       <img src="" alt="movie-image" aria-label="movie-image"
         class="js-movie-image rounded-md w-full m-auto h-60 object-fill" />
       <div class="card-info py-4 px-4 text-white">
-        <h2 class="movie-title text-white uppercase text-2xl mb-2 font-bold js-movie-name"></h2>
+        <h2 class="movie-title text-white text-2xl mb-2 font-bold js-movie-name"></h2>
 
         <ul class="movie-data flex gap-4 mb-2 font-bold">
           <li class="flex items-center justify-center gap-2 p-2">
@@ -202,7 +203,7 @@
                       <p class="mb-2">Rating: 8.5</p>
                       <a href="https://www.youtube.com/watch?v=VIDEO_ID" target="_blank"
                         class="text-blue-500 hover:underline mb-2">Watch on YouTube</a>
-                      <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                      <button class="js-canvas-delete-btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
                         Delete
                       </button>
                     </div>
@@ -219,7 +220,8 @@
   <template class="js-canvas-template-card">
     <li class="flex items-center border-b border-gray-200 pb-4 mb-4">
       <div class="w-1/2 mr-4">
-        <iframe width="100%" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen class="canvas-iframe"></iframe>
+        <iframe width="100%" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen
+          class="canvas-iframe"></iframe>
       </div>
       <div class="p-4">
         <h3 class="text-xl font-bold mb-2 canvas-title">Movie Title</h3>
@@ -228,7 +230,7 @@
         <p class="mb-2 canvas-rating">Rating: 8.5</p>
         <a href="https://www.youtube.com/watch?v=VIDEO_ID" target="_blank"
           class="text-blue-500 hover:underline mb-2 canvas-href">Watch on YouTube</a>
-        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        <button class="canvas-delete-btn bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
           Delete
         </button>
       </div>
