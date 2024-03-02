@@ -223,14 +223,8 @@ function renderBookmarkedMovies(arr, node) {
   arr.forEach((item) => {
     node.innerHTML = "";
     let cloneNode = elTemplateCanvasCard.cloneNode(true);
-    cloneNode.querySelector(".canvas-title").textContent = item.title;
-    cloneNode.querySelector(".canvas-iframe").src = item.movie_frame;
-    cloneNode.querySelector(".canvas-time").textContent = getHourAndMin(
-      item.runtime
-    );
-    cloneNode.querySelector(".canvas-year").textContent = item.movie_year;
-    cloneNode.querySelector(".canvas-rating").textContent = item.imdb_rating;
-    cloneNode.querySelector(".canvas-href").href = item.imdb_link;
+    cloneNode.querySelector(".canvas-title").textContent =
+      item.title.split(" ").slice(0, 2) + "...";
     canvasFragment.appendChild(cloneNode);
   });
   node.appendChild(canvasFragment);
@@ -238,4 +232,3 @@ function renderBookmarkedMovies(arr, node) {
 elCanvasBtn.addEventListener("click", toggleCanvasModal);
 elCanvasCloseBtn.addEventListener("click", toggleCanvasModal);
 renderBookmarkedMovies(bookmarksArray, elCanvasWrapperUl);
-
